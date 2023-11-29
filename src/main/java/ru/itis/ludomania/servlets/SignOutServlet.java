@@ -10,7 +10,7 @@ import java.io.IOException;
 @WebServlet("/sign-out")
 public class SignOutServlet extends HttpServlet {
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         req.getSession().removeAttribute("user");
         resp.sendRedirect("sign-in");
     }

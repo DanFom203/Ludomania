@@ -185,6 +185,25 @@ a{
     font-size: 18px;
 }
 
+.to-sign-button {
+    border: 2px solid CornflowerBlue;
+    background-color: cornflowerblue;
+    border-radius: 37px;
+    width: 200px;
+    height: 80px;
+    margin: 30px auto auto;
+    display: block;
+    color: white;
+
+    text-decoration: none;
+    font-size: 27px;
+
+    padding: 0;
+    line-height: 80px;
+
+    text-align: center;
+}
+
 .jetton{
     display: block;
     color: white;

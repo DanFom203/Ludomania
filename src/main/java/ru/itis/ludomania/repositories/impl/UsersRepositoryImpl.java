@@ -107,7 +107,7 @@ public class UsersRepositoryImpl implements UsersRepository {
     }
 
     @Override
-    public User save(User item) {
+    public void save(User item) {
         Optional<User> savedUser = findByEmail(item.getEmail());
         if (savedUser.isEmpty()) {
             try {
@@ -128,28 +128,9 @@ public class UsersRepositoryImpl implements UsersRepository {
                         throw new SQLException("Cannot retrieve id");
                     }
                 }
-                return item;
             } catch (SQLException throwable) {
                 System.out.println("SQL CustomException: " + throwable.getLocalizedMessage());
             }
-            return item;
-        } else {
-            try {
-                PreparedStatement statement = connection.prepareStatement(
-                        SQL_UPDATE
-                );
-                initStatement(statement, item);
-                statement.setString(6, String.valueOf(savedUser.get().getId()));
-                int affectedRows = statement.executeUpdate();
-
-                if (affectedRows != 1) {
-                    throw new SQLException("Cannot insert account");
-                }
-                return item;
-            } catch (SQLException throwable) {
-                System.out.println("SQL CustomException: " + throwable.getLocalizedMessage());
-            }
-            return item;
         }
     }
 

@@ -2,37 +2,40 @@ package ru.itis.ludomania.repositories.impl;
 
 import com.zaxxer.hikari.HikariDataSource;
 import ru.itis.ludomania.exceptions.CustomException;
-import ru.itis.ludomania.model.Case;
-import ru.itis.ludomania.repositories.CasesRepository;
-import java.sql.*;
+import ru.itis.ludomania.model.WeaponSkin;
+import ru.itis.ludomania.repositories.SkinsRepository;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-
-public class CasesRepositoryImpl implements CasesRepository {
+public class SkinsRepositoryImpl implements SkinsRepository {
     private final Connection connection;
-    private final static String SQL_SELECT_BY_ID = "select * from cases where id = ?;";
-    private final static String SQL_SELECT_ALL = "select * from cases;";
-    private final static String SQL_INSERT = "insert into cases (name, price, skins_count) VALUES (?, ?, ?);";
-    private final static String SQL_SELECT_BY_NAME = "select * from cases where name = ?;";
-    private final static String SQL_DELETE_BY_ID = "DELETE FROM cases WHERE id = ?;";
-    public CasesRepositoryImpl(HikariDataSource dataSource) throws SQLException {
+    private final static String SQL_SELECT_BY_ID = "select * from skins where id = ?;";
+    private final static String SQL_SELECT_ALL = "select * from skins;";
+    private final static String SQL_INSERT = "insert into skins (name, caseId, rarity, price) VALUES (?, ?, ?, ?);";
+    private final static String SQL_SELECT_BY_NAME = "select * from skins where name = ?;";
+    private final static String SQL_DELETE_BY_ID = "DELETE FROM skins WHERE id = ?;";
+    private final static String SQL_SELECT_BY_SKIN_AND_CASE_ID = "SELECT * FROM skins WHERE (id = ?, case_id = ?);";
+    public SkinsRepositoryImpl(HikariDataSource dataSource) throws SQLException {
         this.connection = dataSource.getConnection();
     }
 
-    private Case initCase(ResultSet resultSet) throws SQLException {
+    private WeaponSkin initSkin(ResultSet resultSet) throws SQLException {
 
-        return Case.builder()
+        return WeaponSkin.builder()
                 .id(resultSet.getInt("id"))
                 .name(resultSet.getString("name"))
+                .caseId(resultSet.getInt("case_id"))
+                .rarity(resultSet.getString("rarity"))
                 .price(resultSet.getDouble("price"))
-                .skinsCount(resultSet.getInt("skins_count"))
                 .build();
     }
-
     @Override
-    public Optional<Case> findById(Integer id) {
+    public Optional<WeaponSkin> findById(Integer id) {
         try {
             PreparedStatement preparedStatement = connection.prepareStatement(SQL_SELECT_BY_ID);
             preparedStatement.setInt(1, id);
@@ -42,7 +45,25 @@ public class CasesRepositoryImpl implements CasesRepository {
                 return Optional.empty();
             }
 
-            return Optional.of(initCase(resultSet));
+            return Optional.of(initSkin(resultSet));
+        } catch (SQLException throwable) {
+            System.out.println("SQL CustomException: " + throwable.getLocalizedMessage());
+        }
+        return Optional.empty();
+    }
+    @Override
+    public Optional<WeaponSkin> findBySkinAndCaseId(Integer skinId, Integer caseId) {
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(SQL_SELECT_BY_SKIN_AND_CASE_ID);
+            preparedStatement.setInt(1, skinId);
+            preparedStatement.setInt(2, caseId);
+
+            ResultSet resultSet = preparedStatement.executeQuery();
+            if (!resultSet.next()) {
+                return Optional.empty();
+            }
+
+            return Optional.of(initSkin(resultSet));
         } catch (SQLException throwable) {
             System.out.println("SQL CustomException: " + throwable.getLocalizedMessage());
         }
@@ -50,13 +71,13 @@ public class CasesRepositoryImpl implements CasesRepository {
     }
 
     @Override
-    public List<Case> findAll() {
+    public List<WeaponSkin> findAll() {
         try {
             PreparedStatement preparedStatement = connection.prepareStatement(SQL_SELECT_ALL);
             ResultSet resultSet = preparedStatement.executeQuery();
-            List<Case> result = new ArrayList<>();
+            List<WeaponSkin> result = new ArrayList<>();
             while (resultSet.next()) {
-                result.add(initCase(resultSet));
+                result.add(initSkin(resultSet));
             }
             return result;
         } catch (SQLException throwable) {
@@ -65,19 +86,17 @@ public class CasesRepositoryImpl implements CasesRepository {
         return new ArrayList<>();
     }
 
-
-
     @Override
-    public void save(Case item) {
-        Optional<Case> savedCase = findByName(item.getName());
-        if (savedCase.isEmpty()) {
+    public void save(WeaponSkin item) {
+        Optional<WeaponSkin> savedSkin = findByName(item.getName());
+        if (savedSkin.isEmpty()) {
             try {
                 PreparedStatement statement = connection.prepareStatement(SQL_INSERT);
                 initStatement(statement, item);
                 int affectedRows = statement.executeUpdate();
 
                 if (affectedRows != 1) {
-                    throw new CustomException("Cannot insert account");
+                    throw new CustomException("Cannot insert skin");
                 }
             } catch (SQLException throwable) {
                 System.out.println("SQL CustomException: " + throwable.getLocalizedMessage());
@@ -85,10 +104,11 @@ public class CasesRepositoryImpl implements CasesRepository {
         }
     }
 
-    private void initStatement(PreparedStatement statement, Case item) throws SQLException {
+    private void initStatement(PreparedStatement statement, WeaponSkin item) throws SQLException {
         statement.setString(1, item.getName());
-        statement.setDouble(2, item.getPrice());
-        statement.setInt(3, item.getSkinsCount());
+        statement.setInt(2, item.getCaseId());
+        statement.setString(3, item.getRarity());
+        statement.setDouble(4, item.getPrice());
     }
 
     @Override
@@ -103,7 +123,7 @@ public class CasesRepositoryImpl implements CasesRepository {
     }
 
     @Override
-    public Optional<Case> findByName(String name) {
+    public Optional<WeaponSkin> findByName(String name) {
         try {
             PreparedStatement preparedStatement = connection.prepareStatement(SQL_SELECT_BY_NAME);
             preparedStatement.setString(1, name);
@@ -112,7 +132,7 @@ public class CasesRepositoryImpl implements CasesRepository {
             if (!resultSet.next()) {
                 return Optional.empty();
             }
-            return Optional.of(initCase(resultSet));
+            return Optional.of(initSkin(resultSet));
         } catch (SQLException throwable) {
             System.out.println("SQL CustomException: " + throwable.getLocalizedMessage());
         }

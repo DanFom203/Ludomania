@@ -11,6 +11,7 @@ import ru.itis.ludomania.services.AuthorizationService;
 import ru.itis.ludomania.services.PasswordEncoder;
 import ru.itis.ludomania.services.UserMapper;
 
+import java.util.Objects;
 import java.util.Optional;
 
 @AllArgsConstructor
@@ -21,8 +22,14 @@ public class AuthorizationServiceImpl implements AuthorizationService {
 
     @Override
     public UserDto signUp(SignUpForm form) throws CustomException {
-        if (form.getEmail() == null) {
+        if (Objects.equals(form.getEmail(), "")) {
             throw new CustomException("Email cannot be null");
+        }
+        if (Objects.equals(form.getPassword(), "")) {
+            throw new CustomException("Password cannot be null");
+        }
+        if (form.getPassword().length() < 5) {
+            throw new CustomException("The password is too simple");
         }
         Optional<User> optionalUser = usersRepository.findByEmail(form.getEmail());
         if (optionalUser.isPresent()) {
@@ -30,14 +37,17 @@ public class AuthorizationServiceImpl implements AuthorizationService {
         }
         form.setPassword(passwordEncoder.encode(form.getPassword()));
         User user = userMapper.toUser(form);
-        User savedUser = usersRepository.save(user);
-        return userMapper.toDto(savedUser);
+        usersRepository.save(user);
+        return userMapper.toDto(user);
     }
 
     @Override
     public UserDto signIn(SignInForm form) throws CustomException {
-        if(form.getEmail() == null) {
+        if(Objects.equals(form.getEmail(), "")) {
             throw new CustomException("Email cannot be null");
+        }
+        if (Objects.equals(form.getPassword(), "")) {
+            throw new CustomException("Password cannot be null");
         }
         Optional<User> optionalUser = usersRepository.findByEmail(form.getEmail());
         if(optionalUser.isEmpty()) {

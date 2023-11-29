@@ -32,17 +32,22 @@ public class SignUpServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        SignUpForm form = SignUpForm.builder()
-                .firstName(req.getParameter("firstName"))
-                .lastName(req.getParameter("lastName"))
-                .email(req.getParameter("email"))
-                .password(req.getParameter("password"))
-                .birthdate(
-                        Date.valueOf(req.getParameter("birthdate"))
-                )
-                .build();
         UserDto user;
         try {
+            if ((req.getParameter("birthdate").isEmpty())) {
+                String mess = "Birthdate cannot be null";
+                req.setAttribute("errorMessage", mess);
+                throw new CustomException(mess);
+            }
+            SignUpForm form = SignUpForm.builder()
+                    .firstName(req.getParameter("firstName"))
+                    .lastName(req.getParameter("lastName"))
+                    .email(req.getParameter("email"))
+                    .password(req.getParameter("password"))
+                    .birthdate(
+                            Date.valueOf(req.getParameter("birthdate"))
+                    )
+                    .build();
             user = authorizationService.signUp(form);
         } catch (CustomException e) {
             req.setAttribute("errorMessage", e.getMessage());

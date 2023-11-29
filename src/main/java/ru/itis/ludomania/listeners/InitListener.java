@@ -3,7 +3,9 @@ package ru.itis.ludomania.listeners;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import ru.itis.ludomania.exceptions.CustomException;
+import ru.itis.ludomania.repositories.CasesRepository;
 import ru.itis.ludomania.repositories.UsersRepository;
+import ru.itis.ludomania.repositories.impl.CasesRepositoryImpl;
 import ru.itis.ludomania.repositories.impl.UsersRepositoryImpl;
 import ru.itis.ludomania.services.AuthorizationService;
 import ru.itis.ludomania.services.PasswordEncoder;
@@ -42,8 +44,10 @@ public class InitListener implements ServletContextListener {
         PasswordEncoder passwordEncoder = new PasswordEncoderImpl();
         UserMapper userMapper = new UserMapperImpl();
         UsersRepository usersRepository;
+        CasesRepository casesRepository;
         try {
             usersRepository = new UsersRepositoryImpl(ds);
+            casesRepository = new CasesRepositoryImpl(ds);
         } catch (SQLException e) {
             throw new CustomException("Did not reached connection");
         }
@@ -52,6 +56,7 @@ public class InitListener implements ServletContextListener {
         ServletContext servletContext = sce.getServletContext();
         servletContext.setAttribute("usersRepository", usersRepository);
         servletContext.setAttribute("authorizationService", authorizationService);
+        servletContext.setAttribute("casesRepository", casesRepository);
     }
 
     @Override
