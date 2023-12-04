@@ -1,10 +1,13 @@
 package ru.itis.ludomania.model;
 
-import lombok.Builder;
-import lombok.Data;
+import lombok.*;
 
 @Data
 @Builder
+@Setter
+@Getter
+@AllArgsConstructor
+@NoArgsConstructor
 public class Case {
     private int id;
     private String name;

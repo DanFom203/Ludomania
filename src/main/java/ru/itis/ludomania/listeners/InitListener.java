@@ -4,13 +4,18 @@ import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import ru.itis.ludomania.exceptions.CustomException;
 import ru.itis.ludomania.repositories.CasesRepository;
+import ru.itis.ludomania.repositories.SkinsRepository;
 import ru.itis.ludomania.repositories.UsersRepository;
+import ru.itis.ludomania.repositories.UsersSkinsRepository;
 import ru.itis.ludomania.repositories.impl.CasesRepositoryImpl;
+import ru.itis.ludomania.repositories.impl.SkinsRepositoryImpl;
 import ru.itis.ludomania.repositories.impl.UsersRepositoryImpl;
+import ru.itis.ludomania.repositories.impl.UsersSkinsConnectionRepositoryImpl;
 import ru.itis.ludomania.services.AuthorizationService;
 import ru.itis.ludomania.services.PasswordEncoder;
 import ru.itis.ludomania.services.UserMapper;
 import ru.itis.ludomania.services.impl.AuthorizationServiceImpl;
+import ru.itis.ludomania.services.impl.OpenCaseService;
 import ru.itis.ludomania.services.impl.PasswordEncoderImpl;
 import ru.itis.ludomania.services.impl.UserMapperImpl;
 import javax.servlet.ServletContext;
@@ -45,9 +50,13 @@ public class InitListener implements ServletContextListener {
         UserMapper userMapper = new UserMapperImpl();
         UsersRepository usersRepository;
         CasesRepository casesRepository;
+        SkinsRepository skinsRepository;
+        UsersSkinsRepository usersSkinsRepository;
         try {
             usersRepository = new UsersRepositoryImpl(ds);
             casesRepository = new CasesRepositoryImpl(ds);
+            skinsRepository = new SkinsRepositoryImpl(ds);
+            usersSkinsRepository = new UsersSkinsConnectionRepositoryImpl(ds);
         } catch (SQLException e) {
             throw new CustomException("Did not reached connection");
         }
@@ -57,6 +66,7 @@ public class InitListener implements ServletContextListener {
         servletContext.setAttribute("usersRepository", usersRepository);
         servletContext.setAttribute("authorizationService", authorizationService);
         servletContext.setAttribute("casesRepository", casesRepository);
+        servletContext.setAttribute("openCaseService", new OpenCaseService(casesRepository, skinsRepository, usersRepository, usersSkinsRepository));
     }
 
     @Override

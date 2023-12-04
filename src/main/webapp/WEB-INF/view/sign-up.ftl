@@ -3,74 +3,60 @@
 <head>
     <meta charset="UTF-8">
     <title>Sign Up</title>
-    <link rel="stylesheet" href="resources/css/style.css">
+    <link rel="stylesheet" href="resources/css/style3.css">
     <link rel="stylesheet" href="resources/css/sign-in.css">
+    <link rel="stylesheet" href="resources/css/menu.css">
     <link rel="stylesheet" href="resources/css/error_message.css">
-<#--    <style>-->
-<#--        .to-sign-button {-->
-<#--            border: 2px solid CornflowerBlue;-->
-<#--            background-color: cornflowerblue;-->
-<#--            border-radius: 37px;-->
-<#--            width: 200px;-->
-<#--            height: 80px;-->
-<#--            margin: 30px auto auto;-->
-<#--            display: block;-->
-<#--            color: white;-->
-
-<#--            text-decoration: none;-->
-<#--            font-size: 27px;-->
-
-<#--            padding: 0;-->
-<#--            line-height: 80px;-->
-
-<#--            text-align: center;-->
-<#--        }-->
-<#--    </style>-->
+    <link rel="stylesheet" href="resources/css/sign-up-style.css">
 </head>
 <body>
-<div class="container">
-
-    <form class="form-center-content" method="post">
-        <div class="form-signin-heading">Sign Up</div>
-        <label>First name
-            <input class="form-control" name="firstName" type="text">
-        </label>
-        <label>Last name
-            <input class="form-control" name="lastName" type="text">
-        </label>
-        <label>Email
-            <input class="form-control" name="email" type="email">
-        </label>
-        <label>Password
-            <input class="form-control" name="password" type="password">
-        </label>
-        <label>Birthdate
-            <input class="form-control" name="birthdate" type="date">
-        </label>
-        <#if errorMessage??>
-            <div class="error_message" id="error_message">
-                <span class="close_button">✖</span>
-                ${errorMessage}
-            </div>
-        </#if>
-        <input class="login-button" type="submit" value="Sign-up">
-        <input class="to-sign-button" type="button" value="To sign-in page">
-    </form>
-
+<div class="menu">
+    <#include "menu.ftl">
+</div>
+<div class="wrapper">
+    <div class="login-text">
+        <button class="cta"><i class="fas fa-chevron-down fa-1x"></i></button>
+        <div class="text">
+            <form class="form-center-content" method="post">
+                <a href="">Registration</a>
+                <hr>
+                <br>
+                <input name="firstName" type="text" placeholder="First name">
+                <br>
+                <input name="lastName" type="text" placeholder="Last name">
+                <br>
+                <input name="email" type="email" placeholder="Email">
+                <br>
+                <input name="password" type="password" placeholder="Password">
+                <br>
+                <input name="birthdate" type="date">
+                <br>
+                <#if errorMessage??>
+                    <div class="error_message" id="error_message">
+                        <span class="close_button">✖</span>
+                        ${errorMessage}
+                    </div>
+                </#if>
+                <button class="signup-btn">Sign-up</button>
+            </form>
+        </div>
+    </div>
+    <div class="call-text">
+        <h1>Show your <span>luck</span></h1>
+        <button class="to-signin-button">To sign-in page</button>
+    </div>
 </div>
 
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-        const toSignInButton = document.querySelector('.to-sign-button');
+        const toSignInButton = document.querySelector('.to-signin-button');
 
-        // Обработчик события клика на кнопке
         toSignInButton.addEventListener('click', function () {
-            // Переход на страницу /sign-in
             window.location.href = '/case-opening/sign-in';
         });
     });
 </script>
 <script src="resources/js/error_message_scripts.js"></script>
-
+<script src="resources/js/sign-in.js"></script>
 </body>
 </html>

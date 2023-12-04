@@ -35,6 +35,7 @@ public class SignInServlet extends HttpServlet {
                     .build();
             UserDto user = authorizationService.signIn(form);
             req.getSession().setAttribute("user", user);
+            req.getSession().setAttribute("userId", authorizationService.getUserId(user.getEmail()));
         } catch (CustomException e) {
             req.setAttribute("errorMessage", e.getMessage());
             req.getRequestDispatcher("sign-in.ftl").forward(req, resp);

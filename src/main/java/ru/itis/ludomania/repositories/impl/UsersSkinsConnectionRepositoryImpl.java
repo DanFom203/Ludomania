@@ -4,7 +4,6 @@ import com.zaxxer.hikari.HikariDataSource;
 import ru.itis.ludomania.exceptions.CustomException;
 import ru.itis.ludomania.model.UsersSkin;
 import ru.itis.ludomania.repositories.UsersSkinsRepository;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -17,11 +16,12 @@ import java.util.UUID;
 public class UsersSkinsConnectionRepositoryImpl implements UsersSkinsRepository {
     private final Connection connection;
     private final static String SQL_SELECT_BY_ID = "select * from users_skins_connection where connection_id = ?;";
+    private final static String SQL_SELECT_BY_USER_ID = "select * from users_skins_connection where user_id = ?;";
     private final static String SQL_SELECT_ALL = "select * from users_skins_connection;";
     private final static String SQL_INSERT = "insert into users_skins_connection (user_id, skin_id, same_skin_count) VALUES (?, ?, ?);";
     private final static String SQL_SELECT_BY_USER_AND_SKIN_ID = "select * from users_skins_connection where (user_id = ?, skin_id = ?);";
-    private final static String SQL_UPDATE_PLUS_BY_USER_AND_SKIN_ID = "UPDATE users_skins_connection SET (same_skin_count = same_skin_count + 1) WHERE (user_id = ?, skin_id = ?);";
-    private final static String SQL_UPDATE_MINUS_BY_USER_AND_SKIN_ID = "UPDATE users_skins_connection SET (same_skin_count = same_skin_count - 1) WHERE (user_id = ?, skin_id = ?);";
+    private final static String SQL_UPDATE_PLUS_BY_USER_AND_SKIN_ID = "UPDATE users_skins_connection SET same_skin_count = same_skin_count + 1 WHERE (user_id = ?, skin_id = ?);";
+    private final static String SQL_UPDATE_MINUS_BY_USER_AND_SKIN_ID = "UPDATE users_skins_connection SET same_skin_count = same_skin_count - 1 WHERE (user_id = ?, skin_id = ?);";
     private final static String SQL_DELETE_BY_USER_AND_SKIN_ID = "DELETE FROM users_skins_connection WHERE (user_id = ?, skin_id = ?);";
     public UsersSkinsConnectionRepositoryImpl(HikariDataSource dataSource) throws SQLException {
         this.connection = dataSource.getConnection();
@@ -30,7 +30,7 @@ public class UsersSkinsConnectionRepositoryImpl implements UsersSkinsRepository 
     private UsersSkin initUsersSkin(ResultSet resultSet) throws SQLException {
 
         return UsersSkin.builder()
-                .id(resultSet.getInt("id"))
+                .id(resultSet.getInt("connection_id"))
                 .userId((UUID) resultSet.getObject("user_id"))
                 .skinId(resultSet.getInt("skin_id"))
                 .sameSkinCount(resultSet.getInt("same_skin_count"))
@@ -52,6 +52,22 @@ public class UsersSkinsConnectionRepositoryImpl implements UsersSkinsRepository 
             System.out.println("SQL CustomException: " + throwable.getLocalizedMessage());
         }
         return Optional.empty();
+    }
+    @Override
+    public List<UsersSkin> findByUserId(UUID userId) {
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(SQL_SELECT_BY_USER_ID);
+            preparedStatement.setObject(1, userId);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            List<UsersSkin> result = new ArrayList<>();
+            while (resultSet.next()) {
+                result.add(initUsersSkin(resultSet));
+            }
+            return result;
+        } catch (SQLException throwable) {
+            System.out.println("SQL CustomException: " + throwable.getLocalizedMessage());
+        }
+        return new ArrayList<>();
     }
 
     @Override
@@ -150,7 +166,7 @@ public class UsersSkinsConnectionRepositoryImpl implements UsersSkinsRepository 
             }
             return Optional.of(initUsersSkin(resultSet));
         } catch (SQLException throwable) {
-            System.out.println("SQL CustomException: " + throwable.getLocalizedMessage());
+            System.out.println("SQL CustomException1: " + throwable.getLocalizedMessage());
         }
         return Optional.empty();
     }

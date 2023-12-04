@@ -13,6 +13,7 @@ import ru.itis.ludomania.services.UserMapper;
 
 import java.util.Objects;
 import java.util.Optional;
+import java.util.UUID;
 
 @AllArgsConstructor
 public class AuthorizationServiceImpl implements AuthorizationService {
@@ -38,6 +39,7 @@ public class AuthorizationServiceImpl implements AuthorizationService {
         form.setPassword(passwordEncoder.encode(form.getPassword()));
         User user = userMapper.toUser(form);
         usersRepository.save(user);
+        user = usersRepository.findByEmail(user.getEmail()).get();
         return userMapper.toDto(user);
     }
 
@@ -58,5 +60,14 @@ public class AuthorizationServiceImpl implements AuthorizationService {
             throw new CustomException("Wrong password");
         }
         return userMapper.toDto(user);
+    }
+
+    public UUID getUserId(String email) throws CustomException {
+        Optional<User> user = usersRepository.findByEmail(email);
+        if (user.isPresent()) {
+            return user.get().getId();
+        } else {
+            throw new CustomException("User not found");
+        }
     }
 }

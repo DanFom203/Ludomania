@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.sql.Date;
+import java.util.UUID;
 
 @WebServlet("/sign-up")
 public class SignUpServlet extends HttpServlet {
@@ -33,6 +34,7 @@ public class SignUpServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         UserDto user;
+        UUID userId;
         try {
             if ((req.getParameter("birthdate").isEmpty())) {
                 String mess = "Birthdate cannot be null";
@@ -49,6 +51,7 @@ public class SignUpServlet extends HttpServlet {
                     )
                     .build();
             user = authorizationService.signUp(form);
+            userId = user.getId();
         } catch (CustomException e) {
             req.setAttribute("errorMessage", e.getMessage());
             req.getRequestDispatcher("sign-up.ftl").forward(req, resp);
@@ -56,6 +59,7 @@ public class SignUpServlet extends HttpServlet {
         }
         HttpSession session = req.getSession(true);
         session.setAttribute("user", user);
+        session.setAttribute("userId", userId);
         resp.sendRedirect("profile");
     }
 }

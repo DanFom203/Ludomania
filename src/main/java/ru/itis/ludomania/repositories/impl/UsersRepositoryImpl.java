@@ -18,7 +18,7 @@ public class UsersRepositoryImpl implements UsersRepository {
     private final static String SQL_SELECT_BY_ID = "select * from users where id = ?;";
     private final static String SQL_SELECT_BY_EMAIL = "select * from users where email = ?";
     private final static String SQL_DELETE_BY_ID = "DELETE FROM users WHERE id = ?;";
-    private final static String SQL_UPDATE = "update users set email = ?, password = ?, first_name = ?, last_name = ?, birthdate = ? where id = ?;";
+    private final static String SQL_UPDATE = "update users set email = ?, password = ?, first_name = ?, last_name = ?, birthdate = ?, balance = ? where id = ?;";
     private final static String SQL_SELECT_BY_EMAIL_AND_PASSWORD = "SELECT * FROM users WHERE email = ? AND password = ?";
     public UsersRepositoryImpl(HikariDataSource dataSource) throws SQLException {
         this.connection = dataSource.getConnection();
@@ -32,6 +32,7 @@ public class UsersRepositoryImpl implements UsersRepository {
                 .email(resultSet.getString("email"))
                 .passwordHash(resultSet.getString("password"))
                 .birthdate(resultSet.getDate("birthdate"))
+                .balance(resultSet.getDouble("balance"))
                 .build();
     }
 

@@ -7,55 +7,24 @@ import ru.itis.ludomania.repositories.CasesRepository;
 import ru.itis.ludomania.repositories.SkinsRepository;
 import ru.itis.ludomania.repositories.UsersRepository;
 import ru.itis.ludomania.repositories.UsersSkinsRepository;
-import ru.itis.ludomania.services.ValidationService;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-import java.util.UUID;
+import java.util.*;
 
 public class OpenCaseService {
-    private ValidationService validator;
     private CasesRepository casesRepository;
     private SkinsRepository skinsRepository;
     private UsersRepository usersRepository;
     private UsersSkinsRepository usersSkinsRepository;
 
-    public OpenCaseService( ValidationService validator,
+    public OpenCaseService(
                             CasesRepository casesRepository,
                             SkinsRepository skinsRepository,
                             UsersRepository usersRepository,
                             UsersSkinsRepository usersSkinsRepository) {
-        this.validator = validator;
         this.casesRepository = casesRepository;
         this.skinsRepository = skinsRepository;
         this.usersRepository = usersRepository;
         this.usersSkinsRepository = usersSkinsRepository;
-    }
-
-    public WeaponSkin openCase(UUID userId, int caseId) {
-        int skinsCount = casesRepository.findById(caseId).get().getSkinsCount();
-        int randomSkinId;
-        Random random = new Random();
-        if (caseId == 1) {
-            randomSkinId = random.nextInt(skinsCount);
-        } else {
-            int previousCaseSkinsCount = casesRepository.findById(caseId - 1).get().getSkinsCount();
-            randomSkinId = random.nextInt(skinsCount) + previousCaseSkinsCount;
-        }
-        WeaponSkin droppedWeaponSkin = skinsRepository.findBySkinAndCaseId(randomSkinId, caseId).get();
-        saveDroppedWeaponSkin(userId, droppedWeaponSkin);
-        return droppedWeaponSkin;
-    }
-
-    private void saveDroppedWeaponSkin(UUID userId, WeaponSkin droppedWeaponSkin) {
-        UsersSkin us = UsersSkin.builder()
-                .id(1)
-                .userId(userId)
-                .skinId(droppedWeaponSkin.getId())
-                .build();
-
-        usersSkinsRepository.save(us);
     }
 
     public List<Case> getCasesList() {
@@ -65,4 +34,44 @@ public class OpenCaseService {
         }
         return cases;
     }
+
+    public Case getCaseById(Integer caseId) {
+        return casesRepository.findById(caseId).get();
+    }
+    public WeaponSkin getSkinByName(String skinName) {
+        return skinsRepository.findByName(skinName).get();
+    }
+
+    public List<WeaponSkin> getSkinsForCase(Integer caseId) {
+        return skinsRepository.findByCaseId(caseId);
+    }
+    public List<WeaponSkin> getRandomSkins(List<WeaponSkin> skinsList) {
+        int skinsCount = skinsList.size();
+        List<WeaponSkin> list = new ArrayList<>();
+        Random random = new Random();
+        for (int i = 0; i < 32; i++) {
+            list.add(skinsList.get(random.nextInt(skinsCount)));
+        }
+        return list;
+    }
+    public void saveDroppedWeaponSkin(UUID userId, WeaponSkin droppedWeaponSkin) {
+        UsersSkin us = UsersSkin.builder()
+                .id(1)
+                .userId(userId)
+                .skinId(droppedWeaponSkin.getId())
+                .build();
+
+        usersSkinsRepository.save(us);
+    }
+
+    public List<WeaponSkin> getUsersSkins(UUID userId) {
+        List<UsersSkin> list = usersSkinsRepository.findByUserId(userId);
+        List<WeaponSkin> resultList = new ArrayList<>();
+        for (UsersSkin elem: list) {
+            Optional<WeaponSkin> optSkin = skinsRepository.findById(elem.getSkinId());
+            optSkin.ifPresent(resultList::add);
+        }
+        return resultList;
+    }
+
 }

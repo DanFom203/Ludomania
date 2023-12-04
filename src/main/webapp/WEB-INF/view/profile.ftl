@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Профиль</title>
 
-    <link href="resources/css/style.css" rel="stylesheet">
+    <link href="resources/css/style1.css" rel="stylesheet">
     <link href="resources/css/menu.css" rel="stylesheet">
     <link href="resources/css/profile.css" rel="stylesheet">
 
@@ -14,11 +14,10 @@
     <script src="resources/js/profile.js"></script>
 </head>
 <body>
-
+<div class="menu">
+    <#include "authorizedmenu.ftl">
+</div>
 <div class="container">
-
-    <#include "menu.ftl">
-
     <div class="center-content">
         <div class="container">
             <div class="title">Профиль</div>
@@ -27,29 +26,45 @@
                 <#--                <#if user.avatarId??>-->
                 <#--                <img class="user-avatar" alt="IMAGE" src="files/${user.avatarId}"/>-->
                 <#--                <#else>-->
-                <img class="user-avatar" alt="IMAGE" src="no-avatar.png"/>
+                <img class="user-avatar" alt="IMAGE" src="resources/img/no-avatar.png" style="width:304px;height:228px;"/>
                 <#--            </#if>-->
 
+
                 <div class="user-info-text">
-                    <div class="user-info">${user.firstName}</div>
-                    <div class="user-info">${user.lastName}</div>
-                    <div class="user-info">${user.email}</div>
-                    <div class="user-info">${user.birthdate}</div>
+                    <div class="user-info">FIRST NAME: ${user.firstName}</div>
+                    <div class="user-info">LAST NAME: ${user.lastName}</div>
+                    <div class="user-info">EMAIL: ${user.email}</div>
+                    <div class="user-info">DATE OF BIRTH: ${user.birthdate}</div>
+                    <div class="user-info">YOUR BALANCE: ${user.balance}</div>
                 </div>
 
             </div>
 
-            <form id="add-post-form" action="/add-post" method="post">
-                <label>
-                    Ваша запись:
-                    <textarea id="content" class="input_green" required name="content"></textarea>
-                </label>
-                <input class="button1" value="Отправить" type="submit">
-            </form>
-
             <div class="divider"></div>
+
         </div>
     </div>
+</div>
+<div id="user-skins" class="white-container">
+    <div class="title">Ваши скины</div>
+
+    <#list usersSkins as skin>
+        <div class="user-skin">
+            <#if skin.rarity == "Тайное">
+                <#assign rarityClass = 'red'>
+            <#elseif skin.rarity == "Засекреченное">
+                <#assign rarityClass = 'mediumvioletred'>
+            <#elseif skin.rarity == "Запрещённое">
+                <#assign rarityClass = 'rebeccapurple'>
+            <#elseif skin.rarity == "Армейское качество">
+                <#assign rarityClass = 'blue'>
+            </#if>
+            <img src="${skinImagePath}${skin.getId()}.png" alt="${skin.getName()}" style="width:150px;height:165px; background: ${rarityClass}">
+            <div class="skin-info">
+                <div class="skin-name-rarity">${skin.getName()} - ${skin.getRarity()}</div>
+            </div>
+        </div>
+    </#list>
 </div>
 
 </body>

@@ -5,10 +5,13 @@
     <title>Sign In</title>
     <link rel="stylesheet" href="resources/css/style3.css">
     <link rel="stylesheet" href="resources/css/sign-in.css">
+    <link rel="stylesheet" href="resources/css/menu.css">
     <link rel="stylesheet" href="resources/css/error_message.css">
 </head>
 <body>
-
+<div class="menu">
+    <#include "menu.ftl">
+</div>
 <div class="wrapper">
     <div class="login-text">
         <button class="cta"><i class="fas fa-chevron-down fa-1x"></i></button>
@@ -31,7 +34,7 @@
                         ${errorMessage}
                     </div>
                 </#if>
-                <button class="login-button">Sign-in</button>
+                <button class="login-btn">Sign-in</button>
             </form>
         </div>
     </div>

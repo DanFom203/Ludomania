@@ -15,6 +15,7 @@ import java.util.Optional;
 public class SkinsRepositoryImpl implements SkinsRepository {
     private final Connection connection;
     private final static String SQL_SELECT_BY_ID = "select * from skins where id = ?;";
+    private final static String SQL_SELECT_BY_CASE_ID = "SELECT * FROM skins WHERE case_id = ?;";
     private final static String SQL_SELECT_ALL = "select * from skins;";
     private final static String SQL_INSERT = "insert into skins (name, caseId, rarity, price) VALUES (?, ?, ?, ?);";
     private final static String SQL_SELECT_BY_NAME = "select * from skins where name = ?;";
@@ -23,7 +24,6 @@ public class SkinsRepositoryImpl implements SkinsRepository {
     public SkinsRepositoryImpl(HikariDataSource dataSource) throws SQLException {
         this.connection = dataSource.getConnection();
     }
-
     private WeaponSkin initSkin(ResultSet resultSet) throws SQLException {
 
         return WeaponSkin.builder()
@@ -33,6 +33,22 @@ public class SkinsRepositoryImpl implements SkinsRepository {
                 .rarity(resultSet.getString("rarity"))
                 .price(resultSet.getDouble("price"))
                 .build();
+    }
+    @Override
+    public List<WeaponSkin> findByCaseId(Integer caseId) {
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(SQL_SELECT_BY_CASE_ID);
+            preparedStatement.setInt(1, caseId);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            List<WeaponSkin> result = new ArrayList<>();
+            while (resultSet.next()) {
+                result.add(initSkin(resultSet));
+            }
+            return result;
+        } catch (SQLException throwable) {
+            System.out.println("SQL CustomException: " + throwable.getLocalizedMessage());
+        }
+        return new ArrayList<>();
     }
     @Override
     public Optional<WeaponSkin> findById(Integer id) {
