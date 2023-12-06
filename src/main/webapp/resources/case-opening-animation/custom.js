@@ -76,12 +76,6 @@ function submitSkinSave(skinName) {
 
     var data = "skinName=" + skinName ;
 
-    // xhr.onreadystatechange = function () {
-    //     if (xhr.readyState === 4 && xhr.status === 200) {
-    //         // Handle the response from the servlet
-    //     }
-    // };
-
     xhr.send(data);
 
 }

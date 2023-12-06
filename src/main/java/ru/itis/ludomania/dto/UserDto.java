@@ -15,4 +15,5 @@ public class UserDto {
     private String email;
     private Date birthdate;
     private double balance;
+    private UUID avatarId;
 }

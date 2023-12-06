@@ -19,10 +19,10 @@ public class UsersSkinsConnectionRepositoryImpl implements UsersSkinsRepository 
     private final static String SQL_SELECT_BY_USER_ID = "select * from users_skins_connection where user_id = ?;";
     private final static String SQL_SELECT_ALL = "select * from users_skins_connection;";
     private final static String SQL_INSERT = "insert into users_skins_connection (user_id, skin_id, same_skin_count) VALUES (?, ?, ?);";
-    private final static String SQL_SELECT_BY_USER_AND_SKIN_ID = "select * from users_skins_connection where (user_id = ?, skin_id = ?);";
-    private final static String SQL_UPDATE_PLUS_BY_USER_AND_SKIN_ID = "UPDATE users_skins_connection SET same_skin_count = same_skin_count + 1 WHERE (user_id = ?, skin_id = ?);";
-    private final static String SQL_UPDATE_MINUS_BY_USER_AND_SKIN_ID = "UPDATE users_skins_connection SET same_skin_count = same_skin_count - 1 WHERE (user_id = ?, skin_id = ?);";
-    private final static String SQL_DELETE_BY_USER_AND_SKIN_ID = "DELETE FROM users_skins_connection WHERE (user_id = ?, skin_id = ?);";
+    private final static String SQL_SELECT_BY_USER_AND_SKIN_ID = "select * from users_skins_connection where (user_id = ? AND skin_id = ?);";
+    private final static String SQL_UPDATE_PLUS_BY_USER_AND_SKIN_ID = "UPDATE users_skins_connection SET same_skin_count = same_skin_count + 1 WHERE (user_id = ? AND skin_id = ?);";
+    private final static String SQL_UPDATE_MINUS_BY_USER_AND_SKIN_ID = "UPDATE users_skins_connection SET same_skin_count = same_skin_count - 1 WHERE (user_id = ? AND skin_id = ?);";
+    private final static String SQL_DELETE_BY_USER_AND_SKIN_ID = "DELETE FROM users_skins_connection WHERE (user_id = ? AND skin_id = ?);";
     public UsersSkinsConnectionRepositoryImpl(HikariDataSource dataSource) throws SQLException {
         this.connection = dataSource.getConnection();
     }

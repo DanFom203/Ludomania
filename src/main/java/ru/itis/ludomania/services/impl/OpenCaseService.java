@@ -74,4 +74,8 @@ public class OpenCaseService {
         return resultList;
     }
 
+    public void updateUserBalance(UUID userId, double balance, String operation) {
+        usersRepository.updateUserBalance(userId, balance, operation);
+    }
+
 }

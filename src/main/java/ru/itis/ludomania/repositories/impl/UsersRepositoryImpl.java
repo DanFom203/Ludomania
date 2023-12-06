@@ -1,6 +1,7 @@
 package ru.itis.ludomania.repositories.impl;
 
 import com.zaxxer.hikari.HikariDataSource;
+import ru.itis.ludomania.exceptions.CustomException;
 import ru.itis.ludomania.model.User;
 import ru.itis.ludomania.repositories.UsersRepository;
 
@@ -14,12 +15,14 @@ public class UsersRepositoryImpl implements UsersRepository {
 
     private final Connection connection;
     private final static String SQL_SELECT_ALL = "select * from users;";
-    private final static String SQL_INSERT = "insert into users (first_name, last_name, email, password, birthdate) VALUES (?, ?, ?, ?, ?);";
+    private final static String SQL_INSERT = "insert into users (first_name, last_name, email, password, birthdate, avatar_id) VALUES (?, ?, ?, ?, ?, ?);";
     private final static String SQL_SELECT_BY_ID = "select * from users where id = ?;";
     private final static String SQL_SELECT_BY_EMAIL = "select * from users where email = ?";
     private final static String SQL_DELETE_BY_ID = "DELETE FROM users WHERE id = ?;";
-    private final static String SQL_UPDATE = "update users set email = ?, password = ?, first_name = ?, last_name = ?, birthdate = ?, balance = ? where id = ?;";
+    private final static String SQL_PLUS_UPDATE_BALANCE_BY_ID = "UPDATE users SET balance = balance + ? WHERE id = ?;";
+    private final static String SQL_MINUS_UPDATE_BALANCE_BY_ID = "UPDATE users SET balance = balance - ? WHERE id = ?;";
     private final static String SQL_SELECT_BY_EMAIL_AND_PASSWORD = "SELECT * FROM users WHERE email = ? AND password = ?";
+    private final static String SQL_UPDATE_AVATAR = "update users set avatar_id = ? where email = ?";
     public UsersRepositoryImpl(HikariDataSource dataSource) throws SQLException {
         this.connection = dataSource.getConnection();
     }
@@ -33,6 +36,7 @@ public class UsersRepositoryImpl implements UsersRepository {
                 .passwordHash(resultSet.getString("password"))
                 .birthdate(resultSet.getDate("birthdate"))
                 .balance(resultSet.getDouble("balance"))
+                .avatarId((UUID) resultSet.getObject("avatar_id"))
                 .build();
     }
 
@@ -141,6 +145,7 @@ public class UsersRepositoryImpl implements UsersRepository {
         statement.setString(3, item.getEmail());
         statement.setString(4, item.getPasswordHash());
         statement.setDate(5, item.getBirthdate());
+        statement.setObject(6, item.getAvatarId());
     }
 
     @Override
@@ -149,6 +154,41 @@ public class UsersRepositoryImpl implements UsersRepository {
             PreparedStatement preparedStatement = connection.prepareStatement(SQL_DELETE_BY_ID);
             preparedStatement.setInt(1, id);
             preparedStatement.executeQuery();
+        } catch (SQLException throwable) {
+            System.out.println("SQL CustomException: " + throwable.getLocalizedMessage());
+        }
+    }
+
+    @Override
+    public void updateUserBalance(UUID id, double balance, String operation) {
+        if (operation.equals("plus")) {
+            try {
+                PreparedStatement preparedStatement = connection.prepareStatement(SQL_PLUS_UPDATE_BALANCE_BY_ID);
+                preparedStatement.setDouble(1, balance);
+                preparedStatement.setObject(2, id);
+                preparedStatement.executeUpdate();
+            } catch (SQLException throwable) {
+                System.out.println("SQL CustomException: " + throwable.getLocalizedMessage());
+            }
+        } else if (operation.equals("minus")) {
+            try {
+                PreparedStatement preparedStatement = connection.prepareStatement(SQL_MINUS_UPDATE_BALANCE_BY_ID);
+                preparedStatement.setDouble(1, balance);
+                preparedStatement.setObject(2, id);
+                preparedStatement.executeUpdate();
+            } catch (SQLException throwable) {
+                System.out.println("SQL CustomException: " + throwable.getLocalizedMessage());
+            }
+        }
+    }
+
+    @Override
+    public void updateAvatarForUser(String email, UUID fileId) {
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(SQL_UPDATE_AVATAR);
+            preparedStatement.setObject(1, fileId);
+            preparedStatement.setString(2, email);
+            preparedStatement.executeUpdate();
         } catch (SQLException throwable) {
             System.out.println("SQL CustomException: " + throwable.getLocalizedMessage());
         }

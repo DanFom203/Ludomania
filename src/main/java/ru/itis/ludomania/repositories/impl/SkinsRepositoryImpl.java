@@ -20,7 +20,7 @@ public class SkinsRepositoryImpl implements SkinsRepository {
     private final static String SQL_INSERT = "insert into skins (name, caseId, rarity, price) VALUES (?, ?, ?, ?);";
     private final static String SQL_SELECT_BY_NAME = "select * from skins where name = ?;";
     private final static String SQL_DELETE_BY_ID = "DELETE FROM skins WHERE id = ?;";
-    private final static String SQL_SELECT_BY_SKIN_AND_CASE_ID = "SELECT * FROM skins WHERE (id = ?, case_id = ?);";
+    private final static String SQL_SELECT_BY_SKIN_AND_CASE_ID = "SELECT * FROM skins WHERE (id = ? AND case_id = ?);";
     public SkinsRepositoryImpl(HikariDataSource dataSource) throws SQLException {
         this.connection = dataSource.getConnection();
     }

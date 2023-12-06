@@ -12,6 +12,32 @@
 
     <script src="resources/js/jquery.min.js"></script>
     <script src="resources/js/profile.js"></script>
+    <script>
+        $(document).ready(function(){
+            $("#submitBalance").click(function(e){
+                e.preventDefault(); // Предотвращаем отправку формы по умолчанию
+
+                var formData = $("#add-post-form").serialize(); // Получаем данные формы
+
+                $.ajax({
+                    type: "POST",
+                    url: "balance/donate",
+                    data: formData,
+                    success: function(response) {
+                        // Обновление информации на странице /profile
+                        // Замена содержимого блока #profile с новыми данными
+                        $("#profile").html($(response).find("#profile").html());
+
+                        // Обновление баланса в блоке user-balance-info
+                        $(".user-balance-info").html("YOUR BALANCE: " + response.balance);
+                    },
+                    error: function(error) {
+                        console.log("Error:", error);
+                    }
+                });
+            });
+        });
+    </script>
 </head>
 <body>
 <div class="menu">
@@ -23,11 +49,13 @@
             <div class="title">Профиль</div>
             <div id="profile" class="white-container">
 
-                <#--                <#if user.avatarId??>-->
-                <#--                <img class="user-avatar" alt="IMAGE" src="files/${user.avatarId}"/>-->
-                <#--                <#else>-->
+                <#if user.avatarId??>
+                <img class="user-avatar" alt="IMAGE" src="files/${user.avatarId}" style="width:304px;height:228px;"/>
+                <#else>
                 <img class="user-avatar" alt="IMAGE" src="resources/img/no-avatar.png" style="width:304px;height:228px;"/>
-                <#--            </#if>-->
+                </#if>
+
+                <div class="button"><a href="fileUpload.ftl">Изменить аватарку</a></div>
 
 
                 <div class="user-info-text">
@@ -35,14 +63,22 @@
                     <div class="user-info">LAST NAME: ${user.lastName}</div>
                     <div class="user-info">EMAIL: ${user.email}</div>
                     <div class="user-info">DATE OF BIRTH: ${user.birthdate}</div>
-                    <div class="user-info">YOUR BALANCE: ${user.balance}</div>
+                    <div class="user-balance-info">YOUR BALANCE: ${user.balance}</div>
                 </div>
 
             </div>
 
+            <form id="add-post-form" action="balance/donate" method="post">
+                <div>Top up your balance</div>
+                <input type="number" name="balance" placeholder="Внесите сумму" required>
+                <input id="submitBalance" type="submit" name="Пополнить счёт">
+            </form>
+
             <div class="divider"></div>
 
         </div>
+
+
     </div>
 </div>
 <div id="user-skins" class="white-container">

@@ -16,4 +16,5 @@ public class User {
     private String passwordHash;
     private Date birthdate;
     private double balance;
+    private UUID avatarId;
 }
