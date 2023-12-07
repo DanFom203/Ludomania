@@ -60,7 +60,12 @@
                 </div>
             </div>
 
-            <button type="button" id="openCase" onclick="submitSkinSave('${randomSkins[23].name}')" class="btn btn-info copenbtn"> OPEN </button>
+            <button type="button" id="openCase"
+                    onclick="saveAndUpdate('${randomSkins[23].name}', '${user.balance}', '${selectedCase.price}')"
+                    class="btn btn-info copenbtn"
+                    <#if selectedCase.price gt user.balance>disabled</#if>
+            > OPEN CASE FOR ${selectedCase.price}
+            </button>
 
             <#list skinsList as skin>
                 <ul class="skin">

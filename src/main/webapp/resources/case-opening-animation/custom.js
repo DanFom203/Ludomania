@@ -1,7 +1,6 @@
 $(document).ready(function(){
     $("#openCase").click(function(){
 
-
         if ($(this).hasClass('disabled')) {
             return false;
         } else {
@@ -11,6 +10,33 @@ $(document).ready(function(){
     });
 });
 
+function saveAndUpdate(skinName, balance, price) {
+    // Выполняем сначала submitSkinSave
+    submitSkinSave(skinName);
+
+    // Затем вызываем updateBalance
+    updateBalance(balance, price);
+}
+
+function updateBalance(balance, price) {
+    var openCaseButton = document.getElementById("openCase");
+
+        submitOpenCase(price);
+    // }
+}
+
+function submitOpenCase(price) {
+    var xhr = new XMLHttpRequest();
+
+    var servletUrl = "balance/update";
+
+    xhr.open("POST", servletUrl, true);
+    xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+
+    var data = "casePrice=" + price ;
+
+    xhr.send(data);
+}
 
 function startRoll(){
 

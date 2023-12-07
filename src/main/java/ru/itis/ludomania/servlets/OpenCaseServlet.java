@@ -25,11 +25,13 @@ public class OpenCaseServlet extends HttpServlet {
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         int caseId = Integer.parseInt(request.getParameter("caseId"));
+        Object user = request.getSession(false).getAttribute("user");
         Case selectedCase = openCaseService.getCaseById(caseId);
 
         List<WeaponSkin> skinsList = openCaseService.getSkinsForCase(caseId);
         List<WeaponSkin> randomSkins = openCaseService.getRandomSkins(skinsList);
 
+        request.setAttribute("user", user);
         request.setAttribute("selectedCase", selectedCase);
         request.setAttribute("randomSkins", randomSkins);
         request.setAttribute("caseImagePath", "resources/img/Case" + caseId + ".jpeg");
