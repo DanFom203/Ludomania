@@ -1,15 +1,9 @@
 @font-face {
     font-family: "Avenir Next";
-    /*src: url("/parking/resources/fonts/avenir-next-lt-pro/AvenirNextLTPro-Regular.otf");*/
 }
 
 body {
     font-family: 'Avenir Next', sans-serif;
-    /*background: url("/images/les.jpg") no-repeat center center fixed;*/
-    /*background: #66afe9;*/
-    /*background: url("/images/Новости.jpg") no-repeat 0 0 fixed;*/
-    /*background-size: cover;*/
-
     padding: 0;
     margin: 0;
     width: 100%;
@@ -45,8 +39,6 @@ a{
 .center-content {
     margin: 40px auto 0 auto;
     background: rgba(255,255,255,0.9);
-    /*box-shadow: 0 0 40px 40px rgba(255, 255, 255, 0.8);*/
-    /*border: solid rgba(55, 29, 93, 0.8) 1px;*/
     display: block;
     overflow: hidden;
 
@@ -179,10 +171,11 @@ a{
     margin-right: auto;
     border-radius: 50px;
     text-decoration: none;
-    width: 150px;
-    padding: 0;
+    width: 200px;
+    padding: 0 20px;
     border: 0;
     font-size: 18px;
+    line-height: 40px;
 }
 
 .to-sign-button {

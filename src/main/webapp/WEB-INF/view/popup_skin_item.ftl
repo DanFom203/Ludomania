@@ -26,7 +26,7 @@
         }
     </style>
 
-    <script src="resources/case-opening-animation/custom.js"></script>
+    <script src="resources/js/case-opening.js"></script>
 </head>
 <body>
 <!-- Контент страницы -->

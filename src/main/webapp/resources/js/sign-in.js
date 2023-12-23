@@ -16,4 +16,4 @@ cta.addEventListener('click', function(e){
         cta.innerHTML = "<i class=\"fas fa-chevron-down\"></i>";
         check = 0;
     }
-})
+});

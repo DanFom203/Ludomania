@@ -7,6 +7,8 @@
     <link rel="stylesheet" href="resources/css/sign-in.css">
     <link rel="stylesheet" href="resources/css/menu.css">
     <link rel="stylesheet" href="resources/css/error_message.css">
+
+    <script> src="resources/js/sign-in.js"</script>
 </head>
 <body>
 <div class="menu">

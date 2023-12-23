@@ -11,7 +11,7 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
     <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.3/jquery.easing.min.js"></script>
 
-    <script src="resources/case-opening-animation/custom.js"></script>
+    <script src="resources/js/case-opening.js"></script>
 
     <#include "popup_skin_item.ftl">
 

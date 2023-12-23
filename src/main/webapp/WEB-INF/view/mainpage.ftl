@@ -1,4 +1,4 @@
-<html lang="eng">
+<html lang="en">
 <head>
     <title>Main</title>
     <link href="resources/css/menu.css" rel="stylesheet">
