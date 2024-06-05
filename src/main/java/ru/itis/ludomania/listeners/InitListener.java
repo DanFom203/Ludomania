@@ -20,7 +20,7 @@ import java.sql.SQLException;
 @WebListener
 public class InitListener implements ServletContextListener {
     private static final String DB_USERNAME = "postgres";
-    private static final String DB_PASSWORD = "Danfom2004";
+    private static final String DB_PASSWORD = "{password_hidden}";
     private static final String DB_URL = "jdbc:postgresql://localhost:5432/ludomania_project";
     private static final String DB_DRIVER = "org.postgresql.Driver";
     private static final String IMAGES_STORAGE_PATH = "C:\\Users\\Danii\\Downloads\\Ludomania\\src\\main\\webapp\\resources\\img\\avatarImages\\";
